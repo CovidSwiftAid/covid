@@ -1,0 +1,224 @@
+2022-02-19 22:07:40,534 - ERROR - weibo.py[:751] - HTTPSConnectionPool(host='m.weibo.cn', port=443): Max retries exceeded with url: /detail/4738635129952330 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001B28F94F9B0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。',))
+Traceback (most recent call last):
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connection.py", line 160, in _new_conn
+    (self._dns_host, self.port), self.timeout, **extra_kw
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\util\connection.py", line 84, in create_connection
+    raise err
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\util\connection.py", line 74, in create_connection
+    sock.connect(sa)
+TimeoutError: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connectionpool.py", line 677, in urlopen
+    chunked=chunked,
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connectionpool.py", line 381, in _make_request
+    self._validate_conn(conn)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connectionpool.py", line 978, in _validate_conn
+    conn.connect()
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connection.py", line 309, in connect
+    conn = self._new_conn()
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connection.py", line 172, in _new_conn
+    self, "Failed to establish a new connection: %s" % e
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x000001B28F94F9B0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\requests\adapters.py", line 449, in send
+    timeout=timeout
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\connectionpool.py", line 727, in urlopen
+    method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\urllib3\util\retry.py", line 446, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='m.weibo.cn', port=443): Max retries exceeded with url: /detail/4738635129952330 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001B28F94F9B0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 742, in get_one_weibo
+    weibo = self.get_long_weibo(weibo_id)
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 324, in get_long_weibo
+    html = requests.get(url, headers=self.headers, verify=False).text
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\requests\api.py", line 75, in get
+    return request('get', url, params=params, **kwargs)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\requests\api.py", line 60, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\requests\sessions.py", line 533, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\requests\sessions.py", line 646, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\site-packages\requests\adapters.py", line 516, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='m.weibo.cn', port=443): Max retries exceeded with url: /detail/4738635129952330 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000001B28F94F9B0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。',))
+2022-02-19 22:22:04,590 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,592 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,592 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,593 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,593 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,593 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,594 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,605 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,606 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,606 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,607 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,607 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,608 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,608 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 22:22:04,608 - ERROR - weibo.py[:950] - 程序出错，错误原因可能为以下两者：
+1.user_id不正确；
+2.此用户微博可能需要设置cookie才能爬取。
+解决方案：
+请参考
+https://github.com/dataabc/weibo-crawler#如何获取user_id
+获取正确的user_id；
+或者参考
+https://github.com/dataabc/weibo-crawler#3程序设置
+中的“设置cookie”部分设置cookie信息
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 945, in get_page_count
+    weibo_count = self.user['statuses_count']
+KeyError: 'statuses_count'
+2022-02-19 22:22:04,609 - ERROR - weibo.py[:1561] - unsupported operand type(s) for +: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 1539, in get_pages
+    pages = range(self.start_page, page_count + 1)
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+2022-02-19 23:54:16,092 - ERROR - weibo.py[:952] - time data '2022-Sa- F b 19 17:15:17 +0800 2022' does not match format '%Y-%m-%d'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 923, in get_one_page
+    wb['created_at'], '%Y-%m-%d')
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\_strptime.py", line 565, in _strptime_datetime
+    tt, fraction = _strptime(data_string, format)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\_strptime.py", line 362, in _strptime
+    (data_string, format))
+ValueError: time data '2022-Sa- F b 19 17:15:17 +0800 2022' does not match format '%Y-%m-%d'
+2022-02-19 23:54:24,758 - ERROR - weibo.py[:952] - time data '2022-Fr- F b 04 18:35:42 +0800 2022' does not match format '%Y-%m-%d'
+Traceback (most recent call last):
+  File "D:/学校文件/疫况/covid/allNews/weibo.py", line 923, in get_one_page
+    wb['created_at'], '%Y-%m-%d')
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\_strptime.py", line 565, in _strptime_datetime
+    tt, fraction = _strptime(data_string, format)
+  File "C:\Users\11214\AppData\Local\Programs\Python\Python36\lib\_strptime.py", line 362, in _strptime
+    (data_string, format))
+ValueError: time data '2022-Fr- F b 04 18:35:42 +0800 2022' does not match format '%Y-%m-%d'
