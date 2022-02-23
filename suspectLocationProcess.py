@@ -8,6 +8,27 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 import random
 import numpy as np
+import wordcloud
+import oss2
+
+class AliyunOss(object):
+    def __init__(self):
+        self.access_key_id = "LTAI4GGsTQ35tQcWWDVNKwqG"
+        self.access_key_secret = "reWjqrK73PE0ZvJQH0Hwjr9eyuWbuc"
+        self.auth = oss2.Auth(self.access_key_id, self.access_key_secret)
+        self.bucket_name = "shu-covid"
+        self.endpoint = "https://oss-cn-shanghai.aliyuncs.com"
+        self.bucket = oss2.Bucket(self.auth, self.endpoint, self.bucket_name)
+
+    def put_object_from_file(self, name, file):
+        """
+        上传本地文件
+        :param name: 需要上传的文件名
+        :param file: 本地文件名
+        :return: 阿里云文件地址
+        """
+        self.bucket.put_object_from_file(name, file)
+        return "https://{}.{}/{}".format(self.bucket_name, self.endpoint, name)
 
 mysql_config = {
     'host': 'localhost',
@@ -115,6 +136,7 @@ def read_data():
 
 if __name__ == '__main__':
     create_data()
+    w = wordcloud.WordCloud(font_path="simsun.ttc", background_color="white")
 
     start_time, end_time = get_time()
     jieba.enable_paddle()
@@ -142,6 +164,7 @@ if __name__ == '__main__':
     hour_data = cursor.fetchall()
     # print(data)
     per_set = set()  # 地名集合
+    per_list = []
     for i in data:
         weibo_id = i[0]
         user_id = i[2]
@@ -155,7 +178,15 @@ if __name__ == '__main__':
             word, flag = list(words)[0]
             if flag == 'LOC':
                 per_set.add(word)
-    print(per_set)
+                per_list.append(word)
+    # print(per_set)
+    # print(' '.join(per_list))
+    w.generate(' '.join(per_list))
+    w.to_file("wordcloud.png")
+    aliyunoss = AliyunOss()
+    img = aliyunoss.put_object_from_file("images/wordcloud.png", "wordcloud.png")
+    print(img)
+
     for place in per_set:
         hour_like = hour_comment = hour_repost = hour_sum = 0
         day_like = day_comment = day_repost = day_sum = 0
@@ -200,8 +231,6 @@ if __name__ == '__main__':
         print(place, closed_rate, positive_rate)
         print(text)
 
-        # sql = "INSERT INTO real_time_weibo_after_processing(place,closed_rate,positive_rate,text) VALUES('%s','%s','%s','%s')"
-        # cursor.execute(sql % (str(place), str(closed_rate[0][0]), str(positive_rate[0][0]), str(text)))
         sql = 'insert into real_time_weibo_after_processing(place,closed_rate,positive_rate,text) values(\"' + str(
             place) + '\", \"' + str(closed_rate[0][0]) + '\", \"' + str(positive_rate[0][0]) + '\", \"' + str(
             text) + '\")'
