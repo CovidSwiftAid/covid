@@ -94,10 +94,12 @@ if __name__ == '__main__':
     create_table = """
                         CREATE TABLE IF NOT EXISTS risk_place (
                         `id` int NOT NULL AUTO_INCREMENT,
-                        `place` varchar(100) NOT NULL,
-                        `closed_rate` varchar(20) DEFAULT NULL,
-                        `positive_rate` varchar(20) DEFAULT NULL,
-                        `text` varchar(12000) DEFAULT NULL,
+                        `update_time` varchar(32) DEFAULT NULL,
+                        `city` varchar(20) DEFAULT NULL,
+                        `province` varchar(20) DEFAULT NULL,
+                        `county` varchar(20) DEFAULT NULL,
+                        `area_name` varchar(64) DEFAULT NULL,
+                        `type` varchar(16) DEFAULT NULL,
                         PRIMARY KEY (`id`)
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                         """
