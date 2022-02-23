@@ -22,6 +22,11 @@ import requests
 from lxml import etree
 from requests.adapters import HTTPAdapter
 from tqdm import tqdm
+import re
+import jieba
+import jieba.posseg as pseg
+
+jieba.enable_paddle()
 
 warnings.filterwarnings("ignore")
 
@@ -657,6 +662,8 @@ class Weibo(object):
             weibo_info.get('reposts_count', 0))
         weibo['topics'] = self.get_topics(selector)
         weibo['at_users'] = self.get_at_users(selector)
+        weibo['covid_num'] = get_covid_num(weibo['text'])
+        weibo['covid_loc'] = get_covid_loc(weibo['text'])
         return self.standardize_info(weibo)
 
     def print_user_info(self):
@@ -1341,6 +1348,8 @@ class Weibo(object):
         sqlite_weibo["reposts_count"] = weibo["reposts_count"]
         sqlite_weibo["retweet_id"] = weibo["retweet_id"]
         sqlite_weibo["at_users"] = weibo["at_users"]
+        sqlite_weibo["covid_loc"] = weibo["covid_loc"]
+        sqlite_weibo["covid_num"] = weibo["covid_num"]
         return sqlite_weibo
 
     def user_to_sqlite(self):
@@ -1635,6 +1644,35 @@ def get_config():
         logger.error(u'config.json 格式不正确，请参考 '
                      u'https://github.com/dataabc/weibo-crawler#3程序设置')
         sys.exit()
+
+
+def get_covid_num(news_str):
+    news_str = str(news_str)
+    news_str_res = []
+    news_str_res.extend(re.findall("\d+[人|例][确诊|感染]", news_str))
+    news_str_res.extend(re.findall("[确诊|感染]\d+[人|例]", news_str))
+    news_str_res.extend(re.findall("[报告|发现]\d+[人|例|名]", news_str))
+    news_str_res.extend(re.findall("[新增|确诊]\d+[人|例|名]", news_str))
+    covid_num_max = 0
+    for covid_str in news_str_res:
+        for covid_num in re.findall("\d+", covid_str):
+            if covid_num_max < int(covid_num):
+                covid_num_max = int(covid_num);
+    return covid_num_max
+
+
+def get_covid_loc(news_str):
+    loc_list = []  # 地名列表
+    word_list = jieba.lcut(news_str)
+    for word in word_list:
+        if len(word) == 1:  # 不加判断会爆
+            continue
+        words = pseg.cut(word, use_paddle=True)  # paddle模式
+        word, flag = list(words)[0]
+        if flag == 'LOC':
+            loc_list.append(word)
+    loc_list = list(set(loc_list))
+    return ''.join(loc_list)
 
 
 def main():
