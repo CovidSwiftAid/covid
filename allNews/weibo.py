@@ -1633,14 +1633,51 @@ class Weibo(object):
         }
         connection = pymysql.connect(**mysql_config)
         cursor = connection.cursor()
-        # 创建'weibo'表
-        sql = """
+        sql = []
+        sql.append("""
         update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.28.0.969.969.180/a716fd45ly8gdijd1zmonj20sa0saaby.jpg?KID=imgbed,tva&Expires=1642436475&ssig=KeVeixJyqB"
 where screen_name="人民日报"
-        """
+        """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.0.0.591.591.180/006qEEUFly1gdim1pmpi6j30gf0gfac7.jpg?KID=imgbed,tva&Expires=1642583603&ssig=GQbfEXlXAR"
+where screen_name="搜狐新闻"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax1.sinaimg.cn/crop.26.21.636.636.180/002TLsr9ly8gv73opk3duj60j60j6dgm02.jpg?KID=imgbed,tva&Expires=1642437311&ssig=km04Sp0uL8"
+where screen_name="央视新闻"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax2.sinaimg.cn/crop.0.0.512.512.180/004isIazly8gxc2mweftsj60e80e8q3602.jpg?KID=imgbed,tva&Expires=1642438551&ssig=feG6kn%2Fb60"
+where screen_name="共青团中央"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://wx3.sinaimg.cn/mw2000/68c25195ly8gxcnit67zij20u00u0myt.jpg"
+where screen_name="中国青年杂志"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax4.sinaimg.cn/crop.0.37.313.313.180/001R0E0aly1gm9cqfv87mj608p0ar77002.jpg?KID=imgbed,tva&Expires=1642438553&ssig=Aic%2Bgii6If"
+where screen_name="新华社"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://wx4.sinaimg.cn/orj360/62c13fbaly8gdilo4hkv5j20m40m8t9y.jpgf"
+where screen_name="环球资讯"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.24.3.657.657.180/002uLDeXly8glmohn698dj60j60j6q3b02.jpg?KID=imgbed,tva&Expires=1642584061&ssig=OJgVa7QmCA"
+where screen_name="人民网"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax2.sinaimg.cn/crop.0.0.200.200.180/78ed3187ly8gdi6uao6x9j205k05kq2t.jpg?KID=imgbed,tva&Expires=1642584063&ssig=BxaSIFAWuQ"
+where screen_name="新浪新闻"
+                """)
+        sql.append("""
+                        update eight_blogs set profile_url="https://tvax4.sinaimg.cn/crop.0.0.1080.1080.180/6a5ce645ly8gdij7dw130j20u00u00uc.jpg?KID=imgbed,tva&Expires=1642583608&ssig=s6AM9AmMLl"
+where screen_name="中国新闻网"
+                        """)
 
-        print(sql)
-        cursor.execute(sql)
+        for item in sql:
+            cursor.execute(item)
+        connection.commit()
         cursor.close()
         connection.close()
 

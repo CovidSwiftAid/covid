@@ -1727,3 +1727,49 @@ Traceback (most recent call last):
   File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
     raise errorclass(errno, errval)
 pymysql.err.ProgrammingError: (1064, 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.28.0.969.969.1\' at line 2')
+2022-02-23 22:51:40,057 - ERROR - (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'update eight_blogs set profile_url='https://tvax3.sinaimg.cn/crop.0.0.591.591.18' at line 3")
+Traceback (most recent call last):
+  File "/Users/yuanxinyuan/Desktop/covid/allNews/weibo.py", line 1691, in main
+    wb.update_profile()
+  File "/Users/yuanxinyuan/Desktop/covid/allNews/weibo.py", line 1661, in update_profile
+    cursor.execute(sql)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.ProgrammingError: (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'update eight_blogs set profile_url='https://tvax3.sinaimg.cn/crop.0.0.591.591.18' at line 3")
+2022-02-23 22:52:19,155 - ERROR - (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',\nupdate eight_blogs set profile_url='https://tvax3.sinaimg.cn/crop.0.0.591.591.' at line 2")
+Traceback (most recent call last):
+  File "/Users/yuanxinyuan/Desktop/covid/allNews/weibo.py", line 1691, in main
+    wb.update_profile()
+  File "/Users/yuanxinyuan/Desktop/covid/allNews/weibo.py", line 1661, in update_profile
+    cursor.execute(sql)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/Users/yuanxinyuan/Library/Python/3.8/lib/python/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.ProgrammingError: (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',\nupdate eight_blogs set profile_url='https://tvax3.sinaimg.cn/crop.0.0.591.591.' at line 2")
