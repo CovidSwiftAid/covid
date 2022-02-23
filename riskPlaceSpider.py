@@ -1,7 +1,17 @@
+import pymysql
 import requests
 import time
 import json
 import hashlib
+
+mysql_config = {
+    'host': 'localhost',
+    'port': 3306,
+    'user': 'root',
+    'password': '136418xx',
+    'charset': 'utf8mb4',
+    'database': 'covid'
+}
 
 
 def get_risk_area():
@@ -79,4 +89,34 @@ def get_risk_area():
 
 
 if __name__ == '__main__':
-    print(get_risk_area())
+    res = get_risk_area()
+    print(res)
+    db = pymysql.connect(**mysql_config)
+    cursor = db.cursor()
+    create_table = """
+                        CREATE TABLE IF NOT EXISTS risk_place (
+                        id int NOT NULL AUTO_INCREMENT,
+                        update_time varchar(32) DEFAULT NULL,
+                        city varchar(20) DEFAULT NULL,
+                        province varchar(20) DEFAULT NULL,
+                        county varchar(20) DEFAULT NULL,
+                        area_name varchar(64) DEFAULT NULL,
+                        type varchar(16) DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                        """
+    cursor.execute(create_table)
+    sql = "TRUNCATE TABLE risk_place"  # 清空表
+    cursor.execute(sql)
+    insert_sql = 'INSERT INTO risk_place(update_time, city, province, county, area_name, type) VALUES(%s, %s, %s, %s, %s, %s)'
+    try:
+        insert_res1 = cursor.executemany(insert_sql, res[0])
+        print(insert_res1)
+        insert_res2 = cursor.executemany(insert_sql, res[1])
+        print(insert_res2)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+    finally:
+        cursor.close()
+        db.close()

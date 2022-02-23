@@ -8,8 +8,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 import random
 import numpy as np
-import wordcloud
-import oss2
+import wordcloud  # 词云
+import oss2  # 传OSS
+
 
 class AliyunOss(object):
     def __init__(self):
@@ -29,6 +30,7 @@ class AliyunOss(object):
         """
         self.bucket.put_object_from_file(name, file)
         return "https://{}.{}/{}".format(self.bucket_name, self.endpoint, name)
+
 
 mysql_config = {
     'host': 'localhost',
@@ -162,6 +164,17 @@ if __name__ == '__main__':
         end_time) + "'"
     cursor.execute(sql)
     hour_data = cursor.fetchall()
+    sql = "select * from risk_place"
+    cursor.execute(sql)
+    risk_data = cursor.fetchall()
+    print(risk_data)
+    province_set = city_set = county_set = area_name = set()
+    for place in risk_data:
+        city_set.add(place[2])
+        province_set.add(place[3])
+        county_set.add(place[4])
+        area_name.add(place[5])
+
     # print(data)
     per_set = set()  # 地名集合
     per_list = []
@@ -176,10 +189,25 @@ if __name__ == '__main__':
                 continue
             words = pseg.cut(word, use_paddle=True)  # paddle模式
             word, flag = list(words)[0]
+            isExist = True
             if flag == 'LOC':
-                per_set.add(word)
-                per_list.append(word)
-    # print(per_set)
+                for place in province_set:
+                    if word in place:
+                        isExist = False
+                for place in city_set:
+                    if word in place:
+                        isExist = False
+                for place in county_set:
+                    if word in place:
+                        isExist = False
+                for place in area_name:
+                    if word in place:
+                        isExist = False
+                if isExist and word != '中国':
+                    per_set.add(word)
+                    per_list.append(word)
+
+    print(per_set)
     # print(' '.join(per_list))
     w.generate(' '.join(per_list))
     w.to_file("wordcloud.png")
