@@ -1,4 +1,3 @@
-from inspect import _void
 import requests
 from lxml import etree
 import json
@@ -125,7 +124,7 @@ def GetNews() -> list:
     return newsData
 
 
-def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "") -> _void:
+def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "") -> None:
     if method == "Console":
         for item in data:
             for key in item:
@@ -205,6 +204,7 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
             connection.close()
         except Exception:
             print(Exception)
+
 
 if __name__ == '__main__':
     rowResult = GetRowData()

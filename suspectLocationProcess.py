@@ -203,7 +203,7 @@ if __name__ == '__main__':
                 for place in area_name:
                     if word in place:
                         isExist = False
-                if isExist and word != '中国':
+                if isExist and word != '中国' and word != '封城':
                     per_set.add(word)
                     per_list.append(word)
 
