@@ -61,9 +61,9 @@ class Weibo(object):
             'original_video_download']  # 取值范围为0、1, 0代表不下载原创微博视频,1代表下载
         self.retweet_video_download = config[
             'retweet_video_download']  # 取值范围为0、1, 0代表不下载转发微博视频,1代表下载
-        self.download_comment = config['download_comment']  #1代表下载评论,0代表不下载
+        self.download_comment = config['download_comment']  # 1代表下载评论,0代表不下载
         self.comment_max_download_count = config[
-            'comment_max_download_count']  #如果设置了下评论，每条微博评论数会限制在这个值内
+            'comment_max_download_count']  # 如果设置了下评论，每条微博评论数会限制在这个值内
         self.result_dir_name = config.get(
             'result_dir_name', 0)  # 结果目录名，取值为0或1，决定结果文件存储在用户昵称文件夹里还是用户id文件夹里
         cookie = config.get('cookie')  # 微博cookie，可填可不填
@@ -277,7 +277,7 @@ class Weibo(object):
             user_info['gender'] = info.get('gender', '')
             params = {
                 'containerid':
-                '230283' + str(self.user_config['user_id']) + '_-_INFO'
+                    '230283' + str(self.user_config['user_id']) + '_-_INFO'
             }
             zh_list = [
                 u'生日', u'所在地', u'小学', u'初中', u'高中', u'大学', u'公司', u'注册时间',
@@ -298,7 +298,7 @@ class Weibo(object):
                         if card.get('item_name') in zh_list:
                             user_info[en_list[zh_list.index(
                                 card.get('item_name'))]] = card.get(
-                                    'item_content', '')
+                                'item_content', '')
             user_info['statuses_count'] = self.string_to_int(
                 info.get('statuses_count', 0))
             user_info['followers_count'] = self.string_to_int(
@@ -413,12 +413,12 @@ class Weibo(object):
                                        verify=False)
                     try_count += 1
                     if (url.endswith(('jpg', 'jpeg'))
-                            and not downloaded.content.endswith(b'\xff\xd9')
-                        ) or (url.endswith('png') and
-                              not downloaded.content.endswith(b'\xaeB`\x82')):
+                        and not downloaded.content.endswith(b'\xff\xd9')
+                    ) or (url.endswith('png') and
+                          not downloaded.content.endswith(b'\xaeB`\x82')):
                         flag = True
 
-                #需要分别判断是否需要下载
+                # 需要分别判断是否需要下载
                 if not file_exist:
                     with open(file_path, 'wb') as f:
                         f.write(downloaded.content)
@@ -441,7 +441,7 @@ class Weibo(object):
         cur = con.cursor()
 
         query_sql = """SELECT url FROM bins WHERE path=? """
-        count = cur.execute(query_sql, (url, )).fetchone()
+        count = cur.execute(query_sql, (url,)).fetchone()
         con.close()
         if count is None:
             return False
@@ -627,7 +627,7 @@ class Weibo(object):
         for k, v in weibo.items():
             if 'bool' not in str(type(v)) and 'int' not in str(
                     type(v)) and 'list' not in str(
-                        type(v)) and 'long' not in str(type(v)):
+                type(v)) and 'long' not in str(type(v)):
                 weibo[k] = v.replace(u'\u200b', '').encode(
                     sys.stdout.encoding, 'ignore').decode(sys.stdout.encoding)
         return weibo
@@ -799,19 +799,19 @@ class Weibo(object):
         try:
             json = req.json()
         except Exception as e:
-            #没有cookie会抓取失败
-            #微博日期小于某个日期的用这个url会被403 需要用老办法尝试一下
+            # 没有cookie会抓取失败
+            # 微博日期小于某个日期的用这个url会被403 需要用老办法尝试一下
             error = True
 
         if error:
-            #最大好像只能有50条 TODO: improvement
+            # 最大好像只能有50条 TODO: improvement
             self._get_weibo_comments_nocookie(weibo, 0, max_count, 0,
                                               on_downloaded)
             return
 
         data = json.get('data')
         if not data:
-            #新接口没有抓取到的老接口也试一下
+            # 新接口没有抓取到的老接口也试一下
             self._get_weibo_comments_nocookie(weibo, 0, max_count, 0,
                                               on_downloaded)
             return
@@ -819,13 +819,13 @@ class Weibo(object):
         comments = data.get('data')
         count = len(comments)
         if count == 0:
-            #没有了可以直接跳出递归
+            # 没有了可以直接跳出递归
             return
 
         if on_downloaded:
             on_downloaded(weibo, comments)
 
-        #随机睡眠一下
+        # 随机睡眠一下
         if max_count % 40 == 0:
             sleep(random.randint(1, 5))
 
@@ -857,7 +857,7 @@ class Weibo(object):
         try:
             json = req.json()
         except Exception as e:
-            #没有cookie会抓取失败
+            # 没有cookie会抓取失败
             logger.info(u'未能抓取评论 微博id:{id} 内容{text}'.format(
                 id=id, text=weibo['text']))
             return
@@ -868,7 +868,7 @@ class Weibo(object):
         comments = data.get('data')
         count = len(comments)
         if count == 0:
-            #没有了可以直接跳出递归
+            # 没有了可以直接跳出递归
             return
 
         if on_downloaded:
@@ -877,7 +877,7 @@ class Weibo(object):
         cur_count += count
         page += 1
 
-        #随机睡眠一下
+        # 随机睡眠一下
         if page % 2 == 0:
             sleep(random.randint(1, 5))
 
@@ -1219,10 +1219,13 @@ class Weibo(object):
                 location varchar(100),
                 created_at DATETIME,
                 source varchar(30),
+                profile_url varchar(255),
                 attitudes_count INT,
                 comments_count INT,
                 reposts_count INT,
                 retweet_id varchar(20),
+                covid_num INT DEFAULT 0,
+                covid_loc VARCHAR(100) DEFAULT "",
                 PRIMARY KEY (id)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"""
         self.mysql_create_table(mysql_config, create_table)
@@ -1274,7 +1277,7 @@ class Weibo(object):
                 self.get_weibo_comments(weibo, max_count,
                                         self.sqlite_insert_comments)
                 count += 1
-                #为防止被ban抓取一定数量的评论后随机睡3到6秒
+                # 为防止被ban抓取一定数量的评论后随机睡3到6秒
                 if count % 20:
                     sleep(random.randint(3, 6))
 
@@ -1559,7 +1562,7 @@ class Weibo(object):
                     # 制会自动解除)，加入随机等待模拟人的操作，可降低被系统限制的风险。默
                     # 认是每爬取1到5页随机等待6到10秒，如果仍然被限，可适当增加sleep时间
                     if (page -
-                            page1) % random_pages == 0 and page < page_count:
+                        page1) % random_pages == 0 and page < page_count:
                         sleep(random.randint(6, 10))
                         page1 = page
                         random_pages = random.randint(1, 5)
@@ -1627,6 +1630,66 @@ class Weibo(object):
         except Exception as e:
             logger.exception(e)
 
+    def update_profile(self):
+        import pymysql
+        mysql_config = {
+            'host': 'localhost',
+            'port': 3306,
+            'user': 'root',
+            'password': '136418xx',
+            'charset': 'utf8mb4',
+            'database': 'covid'
+        }
+        connection = pymysql.connect(**mysql_config)
+        cursor = connection.cursor()
+        sql = []
+        sql.append("""
+        update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.28.0.969.969.180/a716fd45ly8gdijd1zmonj20sa0saaby.jpg?KID=imgbed,tva&Expires=1642436475&ssig=KeVeixJyqB"
+where screen_name="人民日报"
+        """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.0.0.591.591.180/006qEEUFly1gdim1pmpi6j30gf0gfac7.jpg?KID=imgbed,tva&Expires=1642583603&ssig=GQbfEXlXAR"
+where screen_name="搜狐新闻"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax1.sinaimg.cn/crop.26.21.636.636.180/002TLsr9ly8gv73opk3duj60j60j6dgm02.jpg?KID=imgbed,tva&Expires=1642437311&ssig=km04Sp0uL8"
+where screen_name="央视新闻"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax2.sinaimg.cn/crop.0.0.512.512.180/004isIazly8gxc2mweftsj60e80e8q3602.jpg?KID=imgbed,tva&Expires=1642438551&ssig=feG6kn%2Fb60"
+where screen_name="共青团中央"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://wx3.sinaimg.cn/mw2000/68c25195ly8gxcnit67zij20u00u0myt.jpg"
+where screen_name="中国青年杂志"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax4.sinaimg.cn/crop.0.37.313.313.180/001R0E0aly1gm9cqfv87mj608p0ar77002.jpg?KID=imgbed,tva&Expires=1642438553&ssig=Aic%2Bgii6If"
+where screen_name="新华社"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://wx4.sinaimg.cn/orj360/62c13fbaly8gdilo4hkv5j20m40m8t9y.jpgf"
+where screen_name="环球资讯"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax3.sinaimg.cn/crop.24.3.657.657.180/002uLDeXly8glmohn698dj60j60j6q3b02.jpg?KID=imgbed,tva&Expires=1642584061&ssig=OJgVa7QmCA"
+where screen_name="人民网"
+                """)
+        sql.append("""
+                update eight_blogs set profile_url="https://tvax2.sinaimg.cn/crop.0.0.200.200.180/78ed3187ly8gdi6uao6x9j205k05kq2t.jpg?KID=imgbed,tva&Expires=1642584063&ssig=BxaSIFAWuQ"
+where screen_name="新浪新闻"
+                """)
+        sql.append("""
+                        update eight_blogs set profile_url="https://tvax4.sinaimg.cn/crop.0.0.1080.1080.180/6a5ce645ly8gdij7dw130j20u00u00uc.jpg?KID=imgbed,tva&Expires=1642583608&ssig=s6AM9AmMLl"
+where screen_name="中国新闻网"
+                        """)
+
+        for item in sql:
+            cursor.execute(item)
+        connection.commit()
+        cursor.close()
+        connection.close()
+
 
 def get_config():
     """获取config.json文件信息"""
@@ -1680,6 +1743,7 @@ def main():
         config = get_config()
         wb = Weibo(config)
         wb.start()  # 爬取微博信息
+        wb.update_profile()
     except Exception as e:
         logger.exception(e)
 
