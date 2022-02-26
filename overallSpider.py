@@ -206,9 +206,9 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
         except Exception:
             print(Exception)
 
-
-rowResult = GetRowData()
-sumDomData = GetSumDomData(rowResult)
-SaveResult(sumDomData, "MySQL", "sumdom")
-provinceData = GetProvinceData(rowResult)
-SaveResult(provinceData, "MySQL", "province")
+if __name__ == '__main__':
+    rowResult = GetRowData()
+    sumDomData = GetSumDomData(rowResult)
+    SaveResult(sumDomData, "MySQL", "sumdom")
+    provinceData = GetProvinceData(rowResult)
+    SaveResult(provinceData, "MySQL", "province")

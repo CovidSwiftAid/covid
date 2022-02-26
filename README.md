@@ -1,5 +1,5 @@
 suspectLocationProcess.py 处理爬取的含有“疫情 封”字段的微博
-含有nlp和线性回归
+含有nlp、线性回归、词云、去除已经是中高风险地区的疑似地点
 
 overallSpider.py 爬取中国地区的各个省市的确诊数量以及全国的疫情数据
 
