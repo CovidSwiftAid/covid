@@ -1,4 +1,5 @@
 import requests
+import traceback
 from lxml import etree
 import json
 import openpyxl
@@ -118,7 +119,7 @@ def GetNews() -> list:
         for key in rawNewsData[i]:
             if key in newsKey and not newsKey[key].isdigit():
                 newsData[i][newsKey[key]] = DealTime(str(rawNewsData[i][key])) if key == "timestamp" else \
-                rawNewsData[i][key].strip()
+                    rawNewsData[i][key].strip()
             elif key in newsKey and not newsKey[key].isdigit():
                 newsData[i][key] = rawNewsData[i][key].strip()
     return newsData
@@ -180,10 +181,11 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                 else:
                     sql += key + " INT"
                 if count == len(data[0]):
-                    sql += ");"
+                    sql += ")"
                 else:
                     sql += ","
                 count += 1
+            sql += """ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;"""
             cursor.execute(sql)
             for i in range(len(data)):
                 count = 1
@@ -202,8 +204,8 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                 connection.commit()
             cursor.close()
             connection.close()
-        except Exception:
-            print(Exception)
+        except Exception as e:
+            traceback.print_exc()
 
 
 if __name__ == '__main__':
