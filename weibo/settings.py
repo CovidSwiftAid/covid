@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta
 
 BOT_NAME = 'weibo'
 SPIDER_MODULES = ['weibo.spiders']
@@ -34,8 +35,11 @@ CONTAIN_TYPE = 0
 REGION = ['全部']
 
 # 搜索的起始日期，为yyyy-mm-dd形式，搜索结果包含该日期
-START_DATE = '2022-02-20'
-START_TIME = '17'
+now = datetime.now()
+now = now + timedelta(hours=-1)
+print(now)
+START_DATE = now.strftime('%Y-%m-%d')
+START_TIME = now.strftime('%H')
 # 搜索的时间，每次爬取一小时，start_time范围为[0,23]
 
 # 搜索的终止日期，为yyyy-mm-dd形式，搜索结果包含该日期
