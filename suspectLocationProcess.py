@@ -150,7 +150,7 @@ if __name__ == '__main__':
                     place varchar(100) NOT NULL,
                     closed_rate varchar(20),
                     positive_rate varchar(20),
-                    text varchar(12000)
+                    text mediumtext
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"""
     cursor.execute(create_table)
     sql = "TRUNCATE TABLE real_time_weibo_after_processing"  # 清空表
@@ -227,7 +227,7 @@ if __name__ == '__main__':
                 day_repost += weibo[15]
                 text.append({
                     "user_name": weibo[3],
-                    "weibo_text": weibo[4].replace("\'", "\""),
+                    "weibo_text": weibo[4].replace("\'", ""),
                     "created_at": str(weibo[11])
                 })
         #     closed_rate = (day_sum if day_sum <= 5 else 5) * 10 + (
