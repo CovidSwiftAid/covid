@@ -176,8 +176,9 @@ if __name__ == '__main__':
         area_name.add(place[5])
 
     # print(data)
+    remove_place_set = {'中国', '封城', '封村', '中华人民共和国'}
     per_set = set()  # 地名集合
-    per_list = []
+    per_dict = {}
     for i in data:
         weibo_id = i[0]
         user_id = i[2]
@@ -203,13 +204,12 @@ if __name__ == '__main__':
                 for place in area_name:
                     if word in place:
                         isExist = False
-                if isExist and word != '中国' and word != '封城':
+                if isExist and word not in remove_place_set:
                     per_set.add(word)
-                    per_list.append(word)
+                    per_dict[word] = per_dict.get(word, 0) + 1
 
-    print(per_set)
-    # print(' '.join(per_list))
-    w.generate(' '.join(per_list))
+    # print(per_dict)
+    w.generate_from_frequencies(per_dict)
     w.to_file("wordcloud.png")
     aliyunoss = AliyunOss()
     img = aliyunoss.put_object_from_file("images/wordcloud.png", "wordcloud.png")
