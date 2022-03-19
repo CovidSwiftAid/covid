@@ -10,6 +10,7 @@ import random
 import numpy as np
 import wordcloud  # 词云
 import oss2  # 传OSS
+import geocode  # 地理编码
 
 
 class AliyunOss(object):
@@ -147,10 +148,15 @@ if __name__ == '__main__':
     cursor = db.cursor()
     create_table = """
                     CREATE TABLE IF NOT EXISTS real_time_weibo_after_processing (
+                    id int NOT NULL AUTO_INCREMENT,
                     place varchar(100) NOT NULL,
                     closed_rate varchar(20),
                     positive_rate varchar(20),
-                    text mediumtext
+                    text mediumtext,
+                    longitude varchar(20) DEFAULT NULL,
+                    latitude varchar(20) DEFAULT NULL,
+                    level varchar(20) DEFAULT NULL,
+                    PRIMARY KEY (`id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"""
     cursor.execute(create_table)
     sql = "TRUNCATE TABLE real_time_weibo_after_processing"  # 清空表
@@ -160,9 +166,10 @@ if __name__ == '__main__':
     sql = "select * from real_time_weibo order by id desc limit 500"
     cursor.execute(sql)
     data = cursor.fetchall()
-    sql = "select * from real_time_weibo where created_at>'" + str(
-        end_time + timedelta(hours=-1)) + "' and created_at<'" + str(
-        end_time) + "'"
+    # sql = "select * from real_time_weibo where created_at>'" + str(
+    #     end_time + timedelta(hours=-1)) + "' and created_at<'" + str(
+    #     end_time) + "'"
+    sql = "select * from real_time_weibo order by id desc limit 100"
     cursor.execute(sql)
     hour_data = cursor.fetchall()
     sql = "select * from risk_place"
@@ -217,54 +224,56 @@ if __name__ == '__main__':
     print(img)
 
     for place in per_set:
-        hour_like = hour_comment = hour_repost = hour_sum = 0
-        day_like = day_comment = day_repost = day_sum = 0
-        text = []
-        for weibo in data:
-            if place in weibo[4]:
-                day_sum += 1
-                day_like += weibo[13]
-                day_comment += weibo[14]
-                day_repost += weibo[15]
-                text.append({
-                    "user_name": weibo[3],
-                    "weibo_text": weibo[4].replace("\'", "").replace("\"", ""),
-                    "created_at": str(weibo[11])
-                })
-        #     closed_rate = (day_sum if day_sum <= 5 else 5) * 10 + (
-        #             (day_like if day_like <= 100 else 100) + (day_comment if day_comment <= 100 else 100) + (
-        #         day_repost if day_repost <= 100 else 100)) / 30 + 20
-        # print(place, "day_data", day_like, day_comment, day_repost, day_sum)
-        # print("封闭率：", closed_rate)
-        for weibo in hour_data:
-            if place in weibo[4]:
-                hour_sum += 1
-                hour_like += weibo[13]
-                hour_comment += weibo[14]
-                hour_repost += weibo[15]
-        #     positive_rate = (day_sum if day_sum <= 6 else 6) * 5 + (hour_sum if hour_sum <= 2 else 2) * 5 + (
-        #             (hour_like if hour_like <= 100 else 100) + (hour_comment if hour_comment <= 100 else 100) + (
-        #         hour_repost if hour_repost <= 100 else 100)) / 30 + 10
-        # print("hour_data", hour_like, hour_comment, hour_repost, hour_sum)
-        # print("确诊率：", positive_rate)
-        day_sum = day_sum if day_sum <= 5 else 5
-        hour_sum = hour_sum if hour_sum <= 2 else 2
-        day_like = day_like if day_like <= 100 else 100
-        day_comment = day_comment if day_comment <= 100 else 100
-        day_repost = day_repost if day_repost <= 100 else 100
-        hour_like = hour_like if hour_like <= 10 else 10
-        hour_comment = hour_comment if hour_comment <= 10 else 10
-        hour_repost = hour_repost if hour_repost <= 10 else 10
-        closed_rate, positive_rate = linear(day_like, day_comment, day_repost, day_sum, hour_like, hour_comment,
-                                            hour_repost, hour_sum)
-        print(place, closed_rate, positive_rate)
-        print(text)
+        location = geocode.ExcuteSingleQuery([place])
+        if location:
+            hour_like = hour_comment = hour_repost = hour_sum = 0
+            day_like = day_comment = day_repost = day_sum = 0
+            text = []
+            for weibo in data:
+                if place in weibo[4]:
+                    day_sum += 1
+                    day_like += weibo[13]
+                    day_comment += weibo[14]
+                    day_repost += weibo[15]
+                    text.append({
+                        "user_name": weibo[3],
+                        "weibo_text": weibo[4].replace("\'", "").replace("\"", ""),
+                        "created_at": str(weibo[11])
+                    })
+            #     closed_rate = (day_sum if day_sum <= 5 else 5) * 10 + (
+            #             (day_like if day_like <= 100 else 100) + (day_comment if day_comment <= 100 else 100) + (
+            #         day_repost if day_repost <= 100 else 100)) / 30 + 20
+            # print(place, "day_data", day_like, day_comment, day_repost, day_sum)
+            # print("封闭率：", closed_rate)
+            for weibo in hour_data:
+                if place in weibo[4]:
+                    hour_sum += 1
+                    hour_like += weibo[13]
+                    hour_comment += weibo[14]
+                    hour_repost += weibo[15]
+            #     positive_rate = (day_sum if day_sum <= 6 else 6) * 5 + (hour_sum if hour_sum <= 2 else 2) * 5 + (
+            #             (hour_like if hour_like <= 100 else 100) + (hour_comment if hour_comment <= 100 else 100) + (
+            #         hour_repost if hour_repost <= 100 else 100)) / 30 + 10
+            # print("hour_data", hour_like, hour_comment, hour_repost, hour_sum)
+            # print("确诊率：", positive_rate)
+            day_sum = day_sum if day_sum <= 5 else 5
+            hour_sum = hour_sum if hour_sum <= 2 else 2
+            day_like = day_like if day_like <= 100 else 100
+            day_comment = day_comment if day_comment <= 100 else 100
+            day_repost = day_repost if day_repost <= 100 else 100
+            hour_like = hour_like if hour_like <= 10 else 10
+            hour_comment = hour_comment if hour_comment <= 10 else 10
+            hour_repost = hour_repost if hour_repost <= 10 else 10
+            closed_rate, positive_rate = linear(day_like, day_comment, day_repost, day_sum, hour_like, hour_comment,
+                                                hour_repost, hour_sum)
+            # print(place, closed_rate, positive_rate)
+            # print(text)
 
-        sql = 'insert into real_time_weibo_after_processing(place,closed_rate,positive_rate,text) values(\"' + str(
-            place) + '\", \"' + str(closed_rate[0][0]) + '\", \"' + str(positive_rate[0][0]) + '\", \"' + str(
-            text) + '\")'
-        print(sql)
-        cursor.execute(sql)
+            sql = 'insert into real_time_weibo_after_processing(place,closed_rate,positive_rate,text,longitude,latitude,level) values(\"' + str(
+                place) + '\", \"' + str(closed_rate[0][0]) + '\", \"' + str(positive_rate[0][0]) + '\", \"' + str(
+                text) + '\", \"' + location[0][0] + '\", \"' + location[0][1] + '\", \"' + location[0][2] + '\")'
+            print(sql)
+            cursor.execute(sql)
     db.commit()
     cursor.execute(sql)
     cursor.close()

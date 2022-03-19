@@ -3,12 +3,13 @@ import requests
 import time
 import json
 import hashlib
+import geocode
 
 mysql_config = {
-    'host': 'localhost',
+    'host': '124.222.208.208',
     'port': 3306,
     'user': 'root',
-    'password': '136418xx',
+    'password': 'root',
     'charset': 'utf8mb4',
     'database': 'covid'
 }
@@ -90,7 +91,20 @@ def get_risk_area():
 
 if __name__ == '__main__':
     res = get_risk_area()
-    print(res)
+    for i in range(2):
+        for j in range(len(res[i])):
+            place = res[i][j][1] + res[i][j][2] + res[i][j][3] + res[i][j][4]
+            location = geocode.ExcuteSingleQuery([place])
+            if location:
+                res[i][j].append(location[0][0])
+                res[i][j].append(location[0][1])
+                res[i][j].append(location[0][2])
+            else:
+                res[i][j].append("")
+                res[i][j].append("")
+                res[i][j].append("")
+            print(res[i][j])
+    # print(res)
     db = pymysql.connect(**mysql_config)
     cursor = db.cursor()
     create_table = """
@@ -100,15 +114,18 @@ if __name__ == '__main__':
                         city varchar(20) DEFAULT NULL,
                         province varchar(20) DEFAULT NULL,
                         county varchar(20) DEFAULT NULL,
-                        area_name varchar(64) DEFAULT NULL,
+                        area_name varchar(100) DEFAULT NULL,
                         type varchar(16) DEFAULT NULL,
+                        longitude varchar(20) DEFAULT NULL,
+                        latitude varchar(20) DEFAULT NULL,
+                        level varchar(20) DEFAULT NULL,
                         PRIMARY KEY (`id`)
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                         """
     cursor.execute(create_table)
     sql = "TRUNCATE TABLE risk_place"  # 清空表
     cursor.execute(sql)
-    insert_sql = 'INSERT INTO risk_place(update_time, city, province, county, area_name, type) VALUES(%s, %s, %s, %s, %s, %s)'
+    insert_sql = 'INSERT INTO risk_place(update_time, city, province, county, area_name, type, longitude, latitude, level) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     try:
         insert_res1 = cursor.executemany(insert_sql, res[0])
         print(insert_res1)
