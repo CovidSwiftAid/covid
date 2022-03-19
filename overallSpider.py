@@ -90,9 +90,9 @@ def GetProvinceData(result: dict) -> list:
         provinceData.append({})
         for key in temp[i]:
             if key in provinceKey and not provinceKey[key].isdigit():
-                provinceData[i][provinceKey[key]] = DealTime(temp[i][key]) if key == "relativeTime" else temp[i][key]
+                provinceData[i][provinceKey[key]] = DealTime(temp[i][key]) if key == "relativeTime" else (temp[i][key] if temp[i][key] != '' else '0')
             elif key in provinceKey and not provinceKey[key].isdigit():
-                provinceData[i][key] = temp[i][key]
+                provinceData[i][key] = temp[i][key] if temp[i][key] != '' else '0'
     return provinceData
 
 
@@ -157,14 +157,14 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                 file_object.write("\n")
             file_object.write("\n")
     elif method == "MySQL":
-        connection = pymysql.connect(host="localhost", user="root", password="136418xx", charset="utf8")
+        connection = pymysql.connect(host="124.222.208.208", user="root", password="root", charset="utf8")
         cursor = connection.cursor()
         try:
             sql = "CREATE DATABASE IF NOT EXISTS covid;"
             cursor.execute(sql)
             cursor.close()
             connection.close()
-            connection = pymysql.connect(host="localhost", user="root", password="136418xx", database="covid",
+            connection = pymysql.connect(host="124.222.208.208", user="root", password="root", database="covid",
                                          charset="utf8")
             cursor = connection.cursor()
             sql = """DROP TABLE IF EXISTS """ + fileName + """;"""
@@ -200,6 +200,7 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                     else:
                         sql += ","
                     count += 1
+                print(sql)
                 cursor.execute(sql)
                 connection.commit()
             cursor.close()

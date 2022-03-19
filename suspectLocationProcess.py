@@ -33,10 +33,10 @@ class AliyunOss(object):
 
 
 mysql_config = {
-    'host': 'localhost',
+    'host': '124.222.208.208',
     'port': 3306,
     'user': 'root',
-    'password': '136418xx',
+    'password': 'root',
     'charset': 'utf8mb4',
     'database': 'covid'
 }
@@ -49,7 +49,7 @@ def get_time():
     start_date_str = start_date + "-" + start_time
     start_time = datetime.strptime(start_date_str, '%Y-%m-%d-%H')
     end_time = start_time + timedelta(hours=1)
-    start_time = start_time + timedelta(hours=-23)
+    start_time = start_time + timedelta(hours=-11)
     print(start_time, end_time)
     return start_time, end_time
 
@@ -155,8 +155,9 @@ if __name__ == '__main__':
     cursor.execute(create_table)
     sql = "TRUNCATE TABLE real_time_weibo_after_processing"  # 清空表
     cursor.execute(sql)
-    sql = "select * from real_time_weibo where created_at>'" + str(start_time) + "' and created_at<'" + str(
-        end_time) + "'"
+    # sql = "select * from real_time_weibo where created_at>'" + str(start_time) + "' and created_at<'" + str(
+    #     end_time) + "'"
+    sql = "select * from real_time_weibo order by id desc limit 500"
     cursor.execute(sql)
     data = cursor.fetchall()
     sql = "select * from real_time_weibo where created_at>'" + str(
@@ -175,8 +176,8 @@ if __name__ == '__main__':
         county_set.add(place[4])
         area_name.add(place[5])
 
-    # print(data)
-    remove_place_set = {'中国', '封城', '封村', '中华人民共和国'}
+    print(data)
+    remove_place_set = {'中国', '封城', '封村', '中华人民共和国', '美国', '日本', '丹麦', '学校食堂', '泰国', '俄罗斯', '大城市', '居住小区'}
     per_set = set()  # 地名集合
     per_dict = {}
     for i in data:
@@ -227,7 +228,7 @@ if __name__ == '__main__':
                 day_repost += weibo[15]
                 text.append({
                     "user_name": weibo[3],
-                    "weibo_text": weibo[4].replace("\'", ""),
+                    "weibo_text": weibo[4].replace("\'", "").replace("\"", ""),
                     "created_at": str(weibo[11])
                 })
         #     closed_rate = (day_sum if day_sum <= 5 else 5) * 10 + (
