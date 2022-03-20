@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
+import mysqlConfig
 
 BOT_NAME = 'weibo'
 SPIDER_MODULES = ['weibo.spiders']
@@ -55,8 +56,8 @@ FILES_STORE = './'
 # 配置MongoDB数据库
 # MONGO_URI = 'localhost'
 # 配置MySQL数据库，以下为默认配置，可以根据实际情况更改，程序会自动生成一个名为weibo的数据库，如果想换其它名字请更改MYSQL_DATABASE值
-MYSQL_HOST = 'localhost'
-MYSQL_PORT = 3306
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = '136418xx'
-MYSQL_DATABASE = 'covid'
+MYSQL_HOST = mysqlConfig.mysql_config['host']
+MYSQL_PORT = mysqlConfig.mysql_config['port']
+MYSQL_USER = mysqlConfig.mysql_config['user']
+MYSQL_PASSWORD = mysqlConfig.mysql_config['password']
+MYSQL_DATABASE = mysqlConfig.mysql_config['database']

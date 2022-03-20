@@ -4,15 +4,7 @@ import time
 import json
 import hashlib
 import geocode
-
-mysql_config = {
-    'host': '124.222.208.208',
-    'port': 3306,
-    'user': 'root',
-    'password': 'root',
-    'charset': 'utf8mb4',
-    'database': 'covid'
-}
+import mysqlConfig
 
 
 def get_risk_area():
@@ -55,7 +47,7 @@ def get_risk_area():
     req = requests.post(url=url, data=json.dumps(post_dict), headers=headers)
     resp = req.text
     res = json.loads(resp)
-    # print(res)
+    print(res)
     utime = res['data']['end_update_time']  # 更新时间
     hcount = res['data'].get('hcount', 0)  # 高风险地区个数
     mcount = res['data'].get('mcount', 0)  # 低风险地区个数
@@ -105,7 +97,7 @@ if __name__ == '__main__':
                 res[i][j].append("")
             print(res[i][j])
     # print(res)
-    db = pymysql.connect(**mysql_config)
+    db = pymysql.connect(**mysqlConfig.mysql_config)
     cursor = db.cursor()
     create_table = """
                         CREATE TABLE IF NOT EXISTS risk_place (

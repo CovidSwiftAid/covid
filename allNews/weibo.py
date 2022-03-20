@@ -24,6 +24,8 @@ import re
 import jieba
 import jieba.posseg as pseg
 
+import mysqlConfig
+
 jieba.enable_paddle()
 
 warnings.filterwarnings("ignore")
@@ -67,7 +69,7 @@ class Weibo(object):
         cookie = config.get('cookie')  # 微博cookie，可填可不填
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
         self.headers = {'User_Agent': user_agent, 'Cookie': cookie}
-        self.mysql_config = config.get('mysql_config')  # MySQL数据库连接配置，可以不填
+        self.mysql_config = mysqlConfig.mysql_config  # MySQL数据库连接配置，可以不填
         user_id_list = config['user_id_list']
         query_list = config.get('query_list') or []
         if isinstance(query_list, str):
@@ -1021,13 +1023,7 @@ class Weibo(object):
 
     def weibo_to_mysql(self, wrote_count):
         """将爬取的微博信息写入MySQL数据库"""
-        mysql_config = {
-            'host': 'localhost',
-            'port': 3306,
-            'user': 'root',
-            'password': 'ljw123456789...',
-            'charset': 'utf8mb4'
-        }
+        mysql_config = mysqlConfig.mysql_config
         # 创建'weibo'表
         create_table = """
                 CREATE TABLE IF NOT EXISTS eight_blogs (
@@ -1217,15 +1213,7 @@ class Weibo(object):
 
     def update_profile(self):
         import pymysql
-        mysql_config = {
-            'host': 'localhost',
-            'port': 3306,
-            'user': 'root',
-            'password': '136418xx',
-            'charset': 'utf8mb4',
-            'database': 'covid'
-        }
-        connection = pymysql.connect(**mysql_config)
+        connection = pymysql.connect(**mysqlConfig.mysql_config)
         cursor = connection.cursor()
         sql = []
         sql.append("""

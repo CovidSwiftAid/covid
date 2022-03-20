@@ -5,6 +5,7 @@ import json
 import openpyxl
 import time
 import pymysql
+import mysqlConfig
 
 
 def GetRowData() -> dict:
@@ -157,15 +158,14 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                 file_object.write("\n")
             file_object.write("\n")
     elif method == "MySQL":
-        connection = pymysql.connect(host="124.222.208.208", user="root", password="root", charset="utf8")
+        connection = pymysql.connect(**mysqlConfig.mysql_config)
         cursor = connection.cursor()
         try:
             sql = "CREATE DATABASE IF NOT EXISTS covid;"
             cursor.execute(sql)
             cursor.close()
             connection.close()
-            connection = pymysql.connect(host="124.222.208.208", user="root", password="root", database="covid",
-                                         charset="utf8")
+            connection = pymysql.connect(**mysqlConfig.mysql_config)
             cursor = connection.cursor()
             sql = """DROP TABLE IF EXISTS """ + fileName + """;"""
             cursor.execute(sql)

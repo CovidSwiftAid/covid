@@ -11,6 +11,7 @@ import numpy as np
 import wordcloud  # 词云
 import oss2  # 传OSS
 import geocode  # 地理编码
+import mysqlConfig
 
 
 class AliyunOss(object):
@@ -31,16 +32,6 @@ class AliyunOss(object):
         """
         self.bucket.put_object_from_file(name, file)
         return "https://{}.{}/{}".format(self.bucket_name, self.endpoint, name)
-
-
-mysql_config = {
-    'host': '124.222.208.208',
-    'port': 3306,
-    'user': 'root',
-    'password': 'root',
-    'charset': 'utf8mb4',
-    'database': 'covid'
-}
 
 
 def get_time():
@@ -144,7 +135,7 @@ if __name__ == '__main__':
     start_time, end_time = get_time()
     jieba.enable_paddle()
 
-    db = pymysql.connect(**mysql_config)
+    db = pymysql.connect(**mysqlConfig.mysql_config)
     cursor = db.cursor()
     create_table = """
                     CREATE TABLE IF NOT EXISTS real_time_weibo_after_processing (
