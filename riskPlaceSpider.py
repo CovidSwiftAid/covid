@@ -106,7 +106,7 @@ if __name__ == '__main__':
                         city varchar(20) DEFAULT NULL,
                         province varchar(20) DEFAULT NULL,
                         county varchar(20) DEFAULT NULL,
-                        area_name varchar(100) DEFAULT NULL,
+                        area_name text DEFAULT NULL,
                         type varchar(16) DEFAULT NULL,
                         longitude varchar(20) DEFAULT NULL,
                         latitude varchar(20) DEFAULT NULL,
