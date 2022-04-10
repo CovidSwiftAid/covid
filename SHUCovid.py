@@ -45,9 +45,11 @@ def db_insert_covid(covid_tuple_new):
     def similarity(a, b):
         return (item for item in a if item not in b)
     covid_tuple = similarity(covid_tuple_new, covid_list_old)
-    insert_sql = 'INSERT INTO SHU_covid(content) VALUES(%s)'
-    insert_res = cursor.executemany(insert_sql, covid_tuple)
-    print(insert_res)
+    covid_tuple = tuple(covid_tuple)
+    if covid_tuple:
+        insert_sql = 'INSERT INTO SHU_covid(content) VALUES(%s)'
+        insert_res = cursor.executemany(insert_sql, covid_tuple)
+        print(insert_res)
     db.commit()
     cursor.close()
     db.close()
