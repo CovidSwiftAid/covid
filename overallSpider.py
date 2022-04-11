@@ -213,6 +213,24 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
             traceback.print_exc()
 
 
+def db_create_SH_covid_data():
+    db = pymysql.connect(**mysqlConfig.mysql_config)
+    cursor = db.cursor()
+    create_table = """
+                        CREATE TABLE IF NOT EXISTS SH_covid_data (
+                        id int NOT NULL AUTO_INCREMENT,
+                        confirmed int DEFAULT NULL,
+                        asymptomatic int DEFAULT NULL,
+                        time varchar(30) DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                        """
+    cursor.execute(create_table)
+    db.commit()
+    cursor.close()
+    db.close()
+
+
 def save_Shanghai_result(obj):
     db = pymysql.connect(**mysqlConfig.mysql_config)
     cursor = db.cursor()
@@ -232,6 +250,7 @@ def save_Shanghai_result(obj):
 
 
 if __name__ == '__main__':
+    db_create_SH_covid_data()
     rowResult = GetRowData()
     sumDomData = GetSumDomData(rowResult)
     SaveResult(sumDomData, "MySQL", "sumdom")
