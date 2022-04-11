@@ -91,7 +91,8 @@ def GetProvinceData(result: dict) -> list:
         provinceData.append({})
         for key in temp[i]:
             if key in provinceKey and not provinceKey[key].isdigit():
-                provinceData[i][provinceKey[key]] = DealTime(temp[i][key]) if key == "relativeTime" else (temp[i][key] if temp[i][key] != '' else '0')
+                provinceData[i][provinceKey[key]] = DealTime(temp[i][key]) if key == "relativeTime" else (
+                    temp[i][key] if temp[i][key] != '' else '0')
             elif key in provinceKey and not provinceKey[key].isdigit():
                 provinceData[i][key] = temp[i][key] if temp[i][key] != '' else '0'
     return provinceData
@@ -191,6 +192,9 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                 count = 1
                 sql = "INSERT INTO " + fileName + " VALUES (" + str(i + 1) + ","
                 for key in data[i]:
+                    if key == "province":
+                        if data[i][key] == "上海":
+                            save_Shanghai_result(data[i])
                     if key == "relative_time" or key == "province" or key == "time" or key == "title" or key == "content" or key == "link" or key == "source":
                         sql += "\"" + data[i][key] + "\""
                     else:
@@ -200,7 +204,7 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
                     else:
                         sql += ","
                     count += 1
-                print(sql)
+                # print(sql)
                 cursor.execute(sql)
                 connection.commit()
             cursor.close()
@@ -209,9 +213,29 @@ def SaveResult(data: list, method: str, fileName: str = "", sheetName: str = "")
             traceback.print_exc()
 
 
+def save_Shanghai_result(obj):
+    db = pymysql.connect(**mysqlConfig.mysql_config)
+    cursor = db.cursor()
+    time = obj['relative_time'].split(' ')[0].split('-', 1)[1]
+    covid_data = (obj['confirm_relative'], obj['asymptomatic_relative'], time)
+    get_info = """select * from SH_covid_data order by id desc limit 1"""
+    cursor.execute(get_info)
+    last_day = cursor.fetchone()
+    # print(last_day)
+    if last_day[3] != time:
+        insert_sql = 'INSERT INTO SH_covid_data(confirmed, asymptomatic, time) VALUES(%s, %s, %s)'
+        insert_res = cursor.executemany(insert_sql, tuple([(covid_data)]))
+        print(insert_res)
+    db.commit()
+    cursor.close()
+    db.close()
+
+
 if __name__ == '__main__':
     rowResult = GetRowData()
     sumDomData = GetSumDomData(rowResult)
     SaveResult(sumDomData, "MySQL", "sumdom")
     provinceData = GetProvinceData(rowResult)
     SaveResult(provinceData, "MySQL", "province")
+
+# alter table SH_covid_data  AUTO_INCREMENT=8;
