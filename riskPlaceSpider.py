@@ -87,7 +87,12 @@ if __name__ == '__main__':
         for j in range(len(res[i])):
             place = res[i][j][1] + res[i][j][2] + res[i][j][3] + res[i][j][4]
             location = geocode.ExcuteSingleQuery([place])
-            if location:
+            print(location)
+            if location == -2:
+                res[i][j].append("")
+                res[i][j].append("")
+                res[i][j].append("")
+            elif location:
                 res[i][j].append(location[0][0])
                 res[i][j].append(location[0][1])
                 res[i][j].append(location[0][2])
